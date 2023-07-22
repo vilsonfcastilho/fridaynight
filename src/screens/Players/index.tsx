@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FlatList } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 
 import { Header } from '@components/Header';
 import { Highlight } from '@components/Highlight';
@@ -12,16 +13,23 @@ import { Button } from '@components/Button';
 
 import { Container, Form, HeaderList, NumberOfPlayers } from './styles';
 
+type RouteParams = {
+  group: string;
+}
+
 export function Players() {
   const [ selectedTable, setSelectedTable ] = useState('MESA 1');
   const [ players, setPlayers ] = useState([{id: '1', name: 'Vilson'}, {id: '2', name: 'Lincon'}]);
+
+  const route = useRoute();
+  const { group } = route.params as RouteParams;
 
   return (
     <Container>
       <Header showBackButton />
 
       <Highlight
-        title='Rapaziada da Loja'
+        title={group}
         subtitle='Add your friends and separate the tables'
       />
 
