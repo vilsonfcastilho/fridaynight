@@ -22,7 +22,7 @@ export function Groups() {
       <Header />
       <Highlight
         title='Groups'
-        subtitle='Play with your crew.'
+        subtitle='Play with your crew'
       />
 
       <FlatList
