@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Platform } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { Header } from '@components/Header';
 import { Highlight } from '@components/Highlight';
@@ -8,14 +10,22 @@ import { Button } from '@components/Button';
 import { Container, Content, Icon } from './styles';
 
 export function NewGroup() {
+  const [ group, setGroup ] = useState('');
+
+  const navigation = useNavigation();
+
+  function handleGoToPlayers() {
+    navigation.navigate('players', { group });
+  }
+
   return (
-    <Container
-      enabled={Platform.OS === 'ios' ? true : false}
-      behavior="padding"
-    >
+    <Container>
       <Header showBackButton />
 
-      <Content>
+      <Content
+        enabled={Platform.OS === 'ios' ? true : false}
+        behavior="padding"
+      >
         <Icon />
 
         <Highlight
@@ -25,11 +35,13 @@ export function NewGroup() {
 
         <Input
           placeholder='Group name'
+          onChangeText={setGroup}
         />
 
         <Button
           title='Create'
           style={{ marginTop: 20 }}
+          onPress={handleGoToPlayers}
         />
       </Content>
     </Container>
