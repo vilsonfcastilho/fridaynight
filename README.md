@@ -1,6 +1,6 @@
 # fridaynight
 
-This is an application designed to get your crew together and play card games!
+This is an mobile application designed to get your crew together and play card games! 🧙🏻‍♂️
 
 ## 🧱 Current Status
 
