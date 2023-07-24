@@ -102,11 +102,11 @@ export function Players() {
 
       const playersByTable = await getPlayersByGroupAndTable(group, selectedTable);
       setPlayers(playersByTable);
-
-      setIsLoading(false);
     } catch(error) {
       Alert.alert('Players', 'Unable to load players from selected table.');
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
