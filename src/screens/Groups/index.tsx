@@ -29,11 +29,11 @@ export function Groups() {
 
       const storedGroups = await listGroups();
       setGroups(storedGroups);
-
-      setIsLoading(false);
     } catch(error) {
       Alert.alert('Groups', 'Unable to load the groups.');
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
