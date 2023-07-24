@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useState, useCallback } from 'react';
+import { Alert, FlatList } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { Header } from '@components/Header';
 import { Highlight } from '@components/Highlight';
@@ -8,21 +8,42 @@ import { GroupCard } from '@components/GroupCard';
 import { EmptyList } from '@components/EmptyList';
 import { Button } from '@components/Button';
 
-import { Container } from './styles';
+import { listGroups } from '@storage/group/listGroups';
 
-interface IGroup {
-  id: string;
-  name: string;
-}
+import { Container } from './styles';
+import { Loading } from '@components/Loading';
 
 export function Groups() {
-  const [ groups, setGroups ] = useState<IGroup[]>([]);
+  const [ isLoading, setIsLoading ] = useState(true);
+  const [ groups, setGroups ] = useState<string[]>([]);
 
   const navigation = useNavigation();
 
   function handleNewGroup() {
     navigation.navigate('new');
   }
+
+  async function fetchGroups() {
+    try {
+      setIsLoading(true);
+
+      const storedGroups = await listGroups();
+      setGroups(storedGroups);
+
+      setIsLoading(false);
+    } catch(error) {
+      Alert.alert('Groups', 'Unable to load the groups.');
+      console.log(error);
+    }
+  }
+
+  function handleOpenGroup(group: string) {
+    navigation.navigate('players', { group });
+  }
+
+  useFocusEffect(useCallback(() => {
+    fetchGroups();
+  }, []));
 
   return (
     <Container>
@@ -32,24 +53,29 @@ export function Groups() {
         subtitle='Play with your crew'
       />
 
-      <FlatList
-        data={groups}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <GroupCard
-            title={item.name}
-          />
-        )}
-        contentContainerStyle={groups.length === 0 && { flex: 1 }}
-        ListEmptyComponent={() => (
-          <EmptyList
-            message='No groups have been registered yet.'
-          />
-        )}
-      />
+      {
+        isLoading
+        ? <Loading />
+        : <FlatList
+          data={groups}
+          keyExtractor={item => item}
+          renderItem={({ item }) => (
+            <GroupCard
+              title={item}
+              onPress={() => handleOpenGroup(item)}
+            />
+          )}
+          contentContainerStyle={groups.length === 0 && { flex: 1 }}
+          ListEmptyComponent={() => (
+            <EmptyList
+              message='No groups have been registered yet.'
+            />
+          )}
+        />
+      }
 
       <Button
-        title='Create new group'
+        title='Create Group'
         onPress={handleNewGroup}
       />
     </Container>
